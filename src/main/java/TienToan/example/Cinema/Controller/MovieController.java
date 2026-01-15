@@ -23,7 +23,6 @@ public class MovieController {
 
     @GetMapping
     public ResponseEntity<?> getAllMovie(){
-
         List<Movie> movies = movieRepository.findAll();
         return ResponseEntity.ok(movies);
     }
@@ -37,11 +36,19 @@ public class MovieController {
     }
     @PostMapping("/create")
     public ResponseEntity<?> createMovie(@RequestBody @Valid MovieRequest req){
-        if(movieRepository.existsByTitle(req.title())){
-            return ResponseEntity.badRequest().body("Movie đã tồn tại!");
-        }
         movieService.createMovie(req);
         return ResponseEntity.status(HttpStatus.CREATED).body(req);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateMovie(@PathVariable Long id , @RequestBody MovieRequest req){
+        Movie newmovie = movieService.updateMovieById(id, req);
+        return  ResponseEntity.status(HttpStatus.OK).body(newmovie);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMovie(@PathVariable Long id){
+        movieService.deleteMovieById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
