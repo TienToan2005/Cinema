@@ -1,14 +1,12 @@
 package TienToan.example.Cinema.Controller;
 
+import TienToan.example.Cinema.DTO.ApiReponse;
 import TienToan.example.Cinema.DTO.MovieRequest;
 import TienToan.example.Cinema.Entity.Movie;
 import TienToan.example.Cinema.Repository.MovieRepository;
 import TienToan.example.Cinema.Service.MovieService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,28 +20,38 @@ public class MovieController {
     private final MovieRepository movieRepository;
 
     @GetMapping
-    public ResponseEntity<?> getAllMovie(){
+    public ApiReponse<List<Movie>> getAllMovie(){
         List<Movie> movies = movieRepository.findAll();
-        return ResponseEntity.ok(movies);
+        return ApiReponse.<List<Movie>>builder()
+                .result(movies)
+                .build();
     }
     @GetMapping({"/{id}"})
-    public ResponseEntity<?> getMovieByID(@PathVariable Long id){
+    public Object getMovieByID(@PathVariable Long id){
         Movie movie = movieRepository.getById(id);
         if(movie == null){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(movie);
+        return ApiReponse.<Movie>builder()
+                .result(movie)
+                .build();
     }
     @PostMapping("/create")
-    public ResponseEntity<?> createMovie(@RequestBody @Valid MovieRequest req){
-        movieService.createMovie(req);
-        return ResponseEntity.status(HttpStatus.CREATED).body(req);
+    public ApiReponse<Movie> createMovie(@RequestBody @Valid MovieRequest req){
+        Movie newMovie =  movieService.createMovie(req);
+        return ApiReponse.<Movie>builder()
+                .result(newMovie)
+                .messega("Tạo phim thành công")
+                .build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateMovie(@PathVariable Long id , @RequestBody MovieRequest req){
+    public ApiReponse<Movie> updateMovie(@PathVariable Long id , @RequestBody MovieRequest req){
         Movie newmovie = movieService.updateMovieById(id, req);
-        return  ResponseEntity.status(HttpStatus.OK).body(newmovie);
+        return  ApiReponse.<Movie>builder()
+                .result(newmovie)
+                .messega("Thay đổi phim thành công")
+                .build();
     }
 
     @DeleteMapping("/{id}")

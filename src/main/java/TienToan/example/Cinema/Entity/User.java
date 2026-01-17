@@ -1,5 +1,6 @@
 package TienToan.example.Cinema.Entity;
 
+import TienToan.example.Cinema.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,4 +14,6 @@ public class User {
     private String name;
     private String username;
     private String password;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
