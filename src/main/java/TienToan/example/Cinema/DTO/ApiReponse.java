@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class ApiReponse <T>{
     @Builder.Default
     private int code  = 1000;
-    private String messega;
+    private String message;
     private T result;
 }
 

@@ -2,7 +2,6 @@ package TienToan.example.Cinema.Controller;
 
 import TienToan.example.Cinema.DTO.ApiReponse;
 import TienToan.example.Cinema.DTO.UserDTO;
-import TienToan.example.Cinema.Repository.UserRepository;
 import TienToan.example.Cinema.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

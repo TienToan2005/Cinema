@@ -1,5 +1,7 @@
 package TienToan.example.Cinema.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,5 +18,6 @@ public class Seat {
     // Nhiều ghế thuộc về 1 phòng
     @ManyToOne
     @JoinColumn(name = "room_id")
+    @JsonIgnore
     private Room room;
 }

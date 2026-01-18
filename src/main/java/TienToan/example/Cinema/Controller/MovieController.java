@@ -41,7 +41,7 @@ public class MovieController {
         Movie newMovie =  movieService.createMovie(req);
         return ApiReponse.<Movie>builder()
                 .result(newMovie)
-                .messega("Tạo phim thành công")
+                .message("Tạo phim thành công")
                 .build();
     }
 
@@ -50,7 +50,7 @@ public class MovieController {
         Movie newmovie = movieService.updateMovieById(id, req);
         return  ApiReponse.<Movie>builder()
                 .result(newmovie)
-                .messega("Thay đổi phim thành công")
+                .message("Thay đổi phim thành công")
                 .build();
     }
 
