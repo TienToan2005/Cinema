@@ -2,6 +2,7 @@ package TienToan.example.Cinema.config;
 
 import TienToan.example.Cinema.Entity.User;
 import TienToan.example.Cinema.Repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -15,8 +16,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public org.springframework.security.core.userdetails.UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findUserByName(username)
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not foud" + username));
 
         return new MyUserDetails(user);

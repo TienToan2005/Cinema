@@ -33,7 +33,7 @@ public class JwtUntils {
     //taotoken
     public String generateToken(User user){
         return Jwts.builder()
-                .subject(user.getName())
+                .subject(user.getUsername())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)

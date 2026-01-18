@@ -18,7 +18,7 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserDTO req){
-        if(userRepository.findUserByName(req.username()) != null){
+        if(userRepository.findByUsername(req.username()) != null){
             return ResponseEntity.badRequest().body("User đã tồn tại!");
         }
 
