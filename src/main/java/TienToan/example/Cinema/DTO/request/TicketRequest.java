@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 
 public record TicketRequest(
         Long id,
-        Long useId,
+        Long userId,
         Long seatId,
         Long scheduleId,
         Double totalPrice,
-        Boolean status,
+        String status,
         LocalDateTime bookingTime
 ) { }

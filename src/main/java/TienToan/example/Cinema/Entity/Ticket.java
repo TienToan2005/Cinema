@@ -1,5 +1,6 @@
 package TienToan.example.Cinema.Entity;
 
+import TienToan.example.Cinema.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,6 +35,7 @@ public class Ticket {
     private Schedule schedule;
 
     private Double totalPrice;
-    private Boolean status;
+    private TicketStatus status;
     private LocalDateTime bookingTime;
+    private LocalDateTime confirmationTime;
 }

@@ -25,8 +25,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MovieService {
-    private final MovieRepository movieRepository;
-    private final MovieMapper movieMapper;
+    MovieRepository movieRepository;
+    MovieMapper movieMapper;
 
     @Transactional
     public MovieResponse createMovie(MovieRequest req) {

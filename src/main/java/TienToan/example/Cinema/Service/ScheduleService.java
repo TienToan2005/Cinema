@@ -11,19 +11,26 @@ import TienToan.example.Cinema.Repository.RoomRepository;
 import TienToan.example.Cinema.Repository.ScheduleRepository;
 import TienToan.example.Cinema.enums.ErrorCode;
 import TienToan.example.Cinema.exception.AppException;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MovieRepository movieRepository;
     private final RoomRepository roomRepository;
     private final ScheduleMapper scheduleMapper;
 
+    static int CLEANING_TIME = 20;
+
+    @Transactional
     public ScheduleResponse createSchedule(ScheduleRequest request){
         Movie movie = movieRepository.findById(request.movieId())
                 .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
@@ -31,8 +38,8 @@ public class ScheduleService {
                 .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
 
         LocalDateTime startTime = request.startTime();
-        LocalDateTime endTime = startTime.plusMinutes(movie.getDuration());
-        boolean isOverlapping = scheduleRepository.existsOverlappingSchedule(room.getId(),startTime,endTime);
+        LocalDateTime endTimeWithCleanup = startTime.plusMinutes(movie.getDuration() + CLEANING_TIME);
+        boolean isOverlapping = scheduleRepository.existsOverlappingSchedule(room.getId(),startTime,endTimeWithCleanup);
         if (isOverlapping) {
             throw new AppException(ErrorCode.ROOM_OCCUPIED);
         }
@@ -40,6 +47,8 @@ public class ScheduleService {
                 .movie(movie)
                 .room(room)
                 .startTime(startTime)
+                .endTime(startTime.plusMinutes(movie.getDuration()))
+                .price(request.price())
                 .build();
         scheduleRepository.save(schedule);
 

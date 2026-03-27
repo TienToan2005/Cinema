@@ -1,5 +1,6 @@
 package TienToan.example.Cinema.Service;
 
+import TienToan.example.Cinema.DTO.request.BookingRequest;
 import TienToan.example.Cinema.DTO.request.TicketRequest;
 import TienToan.example.Cinema.DTO.response.TicketResponse;
 import TienToan.example.Cinema.Entity.Schedule;
@@ -12,8 +13,11 @@ import TienToan.example.Cinema.Repository.SeatRepository;
 import TienToan.example.Cinema.Repository.TicketRepository;
 import TienToan.example.Cinema.Repository.UserRepository;
 import TienToan.example.Cinema.enums.ErrorCode;
+import TienToan.example.Cinema.enums.TicketStatus;
 import TienToan.example.Cinema.exception.AppException;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,12 +28,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class TicketService {
-    private final TicketRepository ticketRepository;
-    private final UserRepository userRepository;
-    private final SeatRepository seatRepository;
-    private final ScheduleRepository scheduleRepository;
-    private final TicketMapper ticketMapper;
+    TicketRepository ticketRepository;
+    UserRepository userRepository;
+    SeatRepository seatRepository;
+    ScheduleRepository scheduleRepository;
+    TicketMapper ticketMapper;
+    BookingCacheService bookingCacheService;
 
     public TicketResponse createTicket(TicketRequest request){
         Ticket ticket = ticketRepository.findById(request.id())
@@ -42,35 +48,70 @@ public class TicketService {
                 .toList();
     }
     @Transactional
-    public TicketResponse BuyTicket(TicketRequest req){
-        User user = userRepository.findById(req.useId())
+    public List<TicketResponse> BuyTicket(BookingRequest req){
+        User user = userRepository.findById(req.userId())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        Seat seat = seatRepository.findById(req.seatId())
-                .orElseThrow(() -> new AppException(ErrorCode.SEAT_NOT_FOUND));
+        boolean isHeld = bookingCacheService.holdSeats(req.scheduleId(), req.seatIds(), user.getId().toString());
+        if(!isHeld){
+            throw new AppException(ErrorCode.SEAT_ALREADY_RESERVED);
+        }
 
         Schedule schedule = scheduleRepository.findById(req.scheduleId())
                 .orElseThrow(() -> new AppException(ErrorCode.SCHEDULE_NOT_FOUND));
 
-        if (!seat.getRoom().getId().equals(schedule.getRoom().getId())) {
-            throw new AppException(ErrorCode.SEAT_NOT_IN_ROOM);
+        List<Seat> seats = seatRepository.findAllById(req.seatIds());
+        if (seats.size() != req.seatIds().size()) {
+            throw new AppException(ErrorCode.SEAT_NOT_FOUND);
+        }
+        List<Ticket> tickets = seats.stream()
+                .map(seat -> {
+                    if(!seat.getRoom().getId().equals(schedule.getRoom().getId())){
+                        throw new AppException(ErrorCode.SEAT_NOT_IN_ROOM);
+                    }
+                    if(ticketRepository.existsByScheduleIdAndSeatId(schedule.getId(),seat.getId(), TicketStatus.PAID)){
+                        throw new AppException(ErrorCode.SEAT_ALREADY_RESERVED);
+                    }
+                    double finalPrice = schedule.getPrice() + (seat.getPrice() != null ? seat.getPrice() : 0);
+                    return Ticket.builder()
+                            .user(user)
+                            .seat(seat)
+                            .schedule(schedule)
+                            .status(TicketStatus.PENDING)
+                            .totalPrice(finalPrice)
+                            .bookingTime(LocalDateTime.now())
+                            .build();
+                }).toList();
+        List<Ticket> savedTickets = ticketRepository.saveAll(tickets);
+        return savedTickets.stream().map(ticketMapper::toTicketResponse).toList();
+    }
+    @Transactional
+    public void confirmPayment(String txnRef, boolean isSuccess){
+        List<Ticket> tickets = ticketRepository.findAllByTxnRefAndStatus(txnRef,TicketStatus.PENDING);
+
+        if(tickets.isEmpty()){
+            throw new AppException(ErrorCode.TICKET_NOT_FOUND);
         }
 
-        boolean exists = ticketRepository.existsByScheduleIdAndSeatId(req.scheduleId(), req.seatId());
-        if(exists) throw new AppException(ErrorCode.SEAT_ALREADY_RESERVED);
+        if(isSuccess){
+            tickets.forEach(ticket -> {
+                ticket.setStatus(TicketStatus.PAID);
+                ticket.setConfirmationTime(LocalDateTime.now());
+            });
+            ticketRepository.saveAll(tickets);
 
-        double finalPrice = seat.getPrice();
+            Long scheduleId = tickets.get(0).getSchedule().getId();
+            List<Long> seatIds = tickets.stream().map(t -> t.getSeat().getId()).toList();
+            bookingCacheService.releaseSeats(scheduleId,seatIds);
 
-        Ticket ticket = Ticket.builder()
-                .user(user)
-                .seat(seat)
-                .schedule(schedule)
-                .status(req.status())
-                .totalPrice(finalPrice)
-                .bookingTime(LocalDateTime.now())
-                .build();
+            //emailService.sendTicketConfirmation(tickets);
+        } else {
+            tickets.forEach(ticket -> ticket.setStatus(TicketStatus.CANCELLED));
+            ticketRepository.saveAll(tickets);
 
-        ticketRepository.save(ticket);
-        return ticketMapper.toTicketResponse(ticket);
+            Long scheduleId = tickets.get(0).getSchedule().getId();
+            List<Long> seatIds = tickets.stream().map(t -> t.getSeat().getId()).toList();
+            bookingCacheService.releaseSeats(scheduleId,seatIds);
+        }
     }
 }

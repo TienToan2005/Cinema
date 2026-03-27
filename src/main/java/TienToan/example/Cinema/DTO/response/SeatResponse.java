@@ -16,4 +16,7 @@ public class SeatResponse {
     private Double price;
     @Builder.Default
     private Boolean isReserved = false;
+    @Builder.Default
+    private Boolean isPending = false;
+    private Boolean isOccupied;
 }

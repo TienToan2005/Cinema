@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public record ScheduleRequest(
     Long movieId,
     Long roomId,
-    LocalDateTime startTime
+    LocalDateTime startTime,
+    Double price
 ) {
 }

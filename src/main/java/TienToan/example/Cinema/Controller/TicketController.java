@@ -1,5 +1,6 @@
 package TienToan.example.Cinema.Controller;
 
+import TienToan.example.Cinema.DTO.request.BookingRequest;
 import TienToan.example.Cinema.DTO.response.ApiResponse;
 import TienToan.example.Cinema.DTO.request.TicketRequest;
 import TienToan.example.Cinema.DTO.response.TicketResponse;
@@ -25,8 +26,8 @@ public class TicketController {
 
     // Mua vé
     @PostMapping("/buy")
-    public ApiResponse<TicketResponse> BuyTicket(@RequestBody TicketRequest req){
-        return ApiResponse.<TicketResponse>builder()
+    public ApiResponse<List<TicketResponse>> BuyTicket(@RequestBody BookingRequest req){
+        return ApiResponse.<List<TicketResponse>>builder()
                 .data(ticketService.BuyTicket(req))
                 .build();
     }

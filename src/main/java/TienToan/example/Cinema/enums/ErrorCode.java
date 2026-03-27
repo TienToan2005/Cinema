@@ -20,7 +20,8 @@ public enum ErrorCode {
     USER_EXISTED(1009,HttpStatus.CONFLICT,"User already exists"),
     MOVIE_EXISTED(1010,HttpStatus.CONFLICT,"Movie already exists"),
     UNAUTHORIZED(1011,HttpStatus.UNAUTHORIZED,"You do not have access"),
-    INTERNAL_ERROR(1012,HttpStatus.INTERNAL_SERVER_ERROR,"Internal server error");
+    INTERNAL_ERROR(1012,HttpStatus.INTERNAL_SERVER_ERROR,"Internal server error"),
+    DATABASE_ERROR(1013,HttpStatus.BAD_REQUEST,"Lỗi kết nối");
 
     private final int code;
     private final HttpStatus httpStatus;

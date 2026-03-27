@@ -10,7 +10,9 @@ import TienToan.example.Cinema.Repository.SeatRepository;
 import TienToan.example.Cinema.Repository.TicketRepository;
 import TienToan.example.Cinema.enums.ErrorCode;
 import TienToan.example.Cinema.exception.AppException;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,12 +20,13 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SeatService {
-    private final SeatRepository seatRepository;
-    private final ScheduleRepository scheduleRepository;
-    private final TicketRepository ticketRepository;
-    private final SeatMapper seatMapper;
-
+    SeatRepository seatRepository;
+    ScheduleRepository scheduleRepository;
+    TicketRepository ticketRepository;
+    SeatMapper seatMapper;
+    BookingCacheService bookingCacheService;
     public SeatResponse createSeat(SeatRequest request){
         Seat seat = seatRepository.findById(request.id())
                 .orElseThrow(() -> new AppException(ErrorCode.SEAT_NOT_FOUND));
@@ -34,20 +37,30 @@ public class SeatService {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new AppException(ErrorCode.SCHEDULE_NOT_FOUND));
 
-        List<Seat> seats = seatRepository.findByRoomId(schedule.getRoom().getId());
+        List<Seat> allSeats = seatRepository.findByRoomIdOrderByRowNameAscColumnNumberAsc(schedule.getRoom().getId());
 
-        Set<Long> reservedSeatIds = ticketRepository.findSeatIdsByScheduleId(scheduleId);
+        Set<Long> soldSeatIds = ticketRepository.findSeatIdsByScheduleId(scheduleId);
 
-        return seats.stream()
-                .map(seat -> SeatResponse.builder()
-                        .id(seat.getId())
-                        .seatName(seat.getSeatName())
-                        .type(seat.getType())
-                        .rowName(seat.getRowName())
-                        .columnNumber(seat.getColumnNumber())
-                        .price(seat.getPrice())
-                        .isReserved(reservedSeatIds.contains(seat.getId()))
-                        .build())
+        Set<Long> holdingSeatIds = bookingCacheService.getHoldingSeatIds(scheduleId);
+
+        return allSeats.stream()
+                .map(seat -> {
+                    double finalPrice = schedule.getPrice() + seat.getExtraPrice();
+                    boolean isSold = soldSeatIds.contains(seat.getId());
+                    boolean isHolding = holdingSeatIds.contains(seat.getId());
+
+                    return SeatResponse.builder()
+                            .id(seat.getId())
+                            .seatName(seat.getSeatName())
+                            .type(seat.getType())
+                            .rowName(seat.getRowName())
+                            .columnNumber(seat.getColumnNumber())
+                            .price(finalPrice)
+                            .isReserved(isSold)
+                            .isPending(isHolding)
+                            .isOccupied(isHolding || isSold)
+                            .build();
+                })
                 .toList();
     }
 

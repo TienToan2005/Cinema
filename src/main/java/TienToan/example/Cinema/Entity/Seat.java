@@ -17,6 +17,7 @@ public class Seat {
     private String columnNumber; //1,2,3
     private String type;
     private Double price;
+    private Double extraPrice;
 
     // Nhiều ghế thuộc về 1 phòng
     @ManyToOne
