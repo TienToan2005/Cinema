@@ -1,7 +1,7 @@
 package TienToan.example.Cinema.config;
 
-import TienToan.example.Cinema.Entity.User;
 import TienToan.example.Cinema.enums.Role;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,22 +9,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class MyUserDetails implements UserDetails {
-    private final String username;
+    private final String loginIdentifier;
     private final String password;
     private final Role role;
 
-
-    public MyUserDetails(User user) {
-        this.username = user.getUsername();
-        this.password = user.getPassword();
-        this.role = user.getRole();
-    }
-
+    private final String email;
+    private final String phoneNumber;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
@@ -34,26 +30,18 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return loginIdentifier;
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
 
+    @Override
+    public boolean isEnabled() { return true; }
 }

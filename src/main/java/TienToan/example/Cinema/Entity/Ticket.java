@@ -1,7 +1,10 @@
 package TienToan.example.Cinema.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +13,9 @@ import java.time.LocalDateTime;
         @UniqueConstraint(columnNames = {"schedule_id", "seat_id"})
 })
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +33,7 @@ public class Ticket {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    private Double price;
+    private Double totalPrice;
     private Boolean status;
-    private LocalDateTime timestamp;
+    private LocalDateTime bookingTime;
 }

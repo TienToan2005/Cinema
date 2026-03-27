@@ -1,10 +1,13 @@
 package TienToan.example.Cinema.Controller;
 
-import TienToan.example.Cinema.DTO.ApiReponse;
-import TienToan.example.Cinema.DTO.UserDTO;
-import TienToan.example.Cinema.Service.UserService;
+import TienToan.example.Cinema.DTO.request.LoginRequest;
+import TienToan.example.Cinema.DTO.request.RegisterRequest;
+import TienToan.example.Cinema.DTO.response.ApiResponse;
+import TienToan.example.Cinema.DTO.response.RefreshTokenResponse;
+import TienToan.example.Cinema.DTO.response.TokenResponse;
+import TienToan.example.Cinema.DTO.response.UserResponse;
+import TienToan.example.Cinema.Service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,14 +17,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
-    private final UserService userService;
+    private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiReponse> login(@RequestBody UserDTO req){
-        return ResponseEntity.ok(userService.loginUser(req));
+    public ApiResponse<TokenResponse> login(@RequestBody LoginRequest request){
+        TokenResponse token = authService.login(request);
+
+        return ApiResponse.<TokenResponse>builder()
+                .data(token)
+                .build();
     }
     @PostMapping("/register")
-    public ResponseEntity<ApiReponse> register(@RequestBody UserDTO req){
-        return ResponseEntity.ok(userService.registerUser(req));
+    public ApiResponse<UserResponse> register(@RequestBody RegisterRequest request){
+        UserResponse user = authService.register(request);
+
+        return ApiResponse.<UserResponse>builder()
+                .data(user)
+                .build();
+    }
+    @PostMapping("/refresh")
+    public ApiResponse<RefreshTokenResponse> refresh(@RequestBody String token){
+        RefreshTokenResponse refreshToken = authService.refreshToken(token);
+
+        return ApiResponse.<RefreshTokenResponse>builder()
+                .data(refreshToken)
+                .build();
     }
 }

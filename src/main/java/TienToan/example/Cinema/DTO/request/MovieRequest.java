@@ -1,6 +1,5 @@
-package TienToan.example.Cinema.DTO;
+package TienToan.example.Cinema.DTO.request;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,5 +18,8 @@ public record  MovieRequest(
          Integer duration,
          @NotNull(message = "Ngày khởi chiếu không được để trống")
          LocalDate releaseDate,
-         String description
+         String description,
+         String posterUrl,
+         String trailerUrl,
+         Double rating
 ) {}

@@ -12,8 +12,11 @@ public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String seatName; //A1,D12
+    private String rowName; //A,B
+    private String columnNumber; //1,2,3
     private String type;
+    private Double price;
 
     // Nhiều ghế thuộc về 1 phòng
     @ManyToOne

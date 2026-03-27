@@ -31,9 +31,10 @@ public class JwtUntils {
     }
 
     //taotoken
-    public String generateToken(User user){
+    public String generateAccessToken(User user){
         return Jwts.builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
+                .subject(user.getPhoneNumber())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey)

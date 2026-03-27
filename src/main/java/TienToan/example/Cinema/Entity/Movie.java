@@ -27,4 +27,8 @@ public class Movie {
     @Column(columnDefinition = "Text")
     private String description;
 
+    private String posterUrl;
+    private String trailerUrl;
+    private Double rating;
+    private boolean deleted = false;
 }
