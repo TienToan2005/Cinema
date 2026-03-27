@@ -38,4 +38,5 @@ public class Ticket {
     private TicketStatus status;
     private LocalDateTime bookingTime;
     private LocalDateTime confirmationTime;
+    private String txnRef;
 }
