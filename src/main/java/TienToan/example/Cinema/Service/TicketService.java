@@ -42,6 +42,7 @@ public class TicketService {
     TicketMapper ticketMapper;
     BookingCacheService bookingCacheService;
     MomoService momoService;
+    EmailService emailService;
     public TicketResponse createTicket(TicketRequest request){
         Ticket ticket = ticketRepository.findById(request.id())
                 .orElseThrow(() -> new AppException(ErrorCode.TICKET_NOT_FOUND));
@@ -84,7 +85,7 @@ public class TicketService {
             }
             double finalPrice = schedule.getPrice() + (seat.getPrice() != null ? seat.getPrice() : 0);
             totalAmount += finalPrice;
-            Ticket.builder()
+            tickets.add(Ticket.builder()
                     .user(user)
                     .seat(seat)
                     .schedule(schedule)
@@ -92,7 +93,7 @@ public class TicketService {
                     .totalPrice(finalPrice)
                     .txnRef(txnRef)
                     .bookingTime(LocalDateTime.now())
-                    .build();
+                    .build());
         }
         ticketRepository.saveAll(tickets);
 
@@ -100,7 +101,9 @@ public class TicketService {
         try {
             payUrl = momoService.createPaymentUrl((long) totalAmount, txnRef);
         } catch (Exception e) {
+            bookingCacheService.releaseSeats(req.scheduleId(),req.seatIds());
             log.error("Lỗi khi tạo giao dịch MoMo: ", e);
+            if (e instanceof AppException) throw (AppException) e;
             throw new AppException(ErrorCode.PAYMENT_ERROR);
         }
         return BookingResponse.builder()
@@ -129,7 +132,7 @@ public class TicketService {
             List<Long> seatIds = tickets.stream().map(t -> t.getSeat().getId()).toList();
             bookingCacheService.releaseSeats(scheduleId,seatIds);
 
-            //emailService.sendTicketConfirmation(tickets);
+            emailService.sendTicketConfirmation(tickets);
         } else {
             tickets.forEach(ticket -> ticket.setStatus(TicketStatus.CANCELLED));
             ticketRepository.saveAll(tickets);

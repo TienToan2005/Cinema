@@ -20,9 +20,15 @@ public enum ErrorCode {
     USER_EXISTED(1009,HttpStatus.CONFLICT,"User already exists"),
     MOVIE_EXISTED(1010,HttpStatus.CONFLICT,"Movie already exists"),
     UNAUTHORIZED(1011,HttpStatus.UNAUTHORIZED,"You do not have access"),
+    UNAUTHENTICATED(1014,HttpStatus.FORBIDDEN, "Unauthenticated user"),
     INTERNAL_ERROR(1012,HttpStatus.INTERNAL_SERVER_ERROR,"Internal server error"),
     DATABASE_ERROR(1013,HttpStatus.BAD_REQUEST,"Lỗi kết nối"),
-    PAYMENT_ERROR(1014,HttpStatus.BAD_REQUEST,"Lỗi thanh toán");
+    PAYMENT_ERROR(1014,HttpStatus.BAD_REQUEST,"Lỗi thanh toán"),
+    USER_NOT_ACTIVE(1015,HttpStatus.BAD_REQUEST,"User not active"),
+    INVALID_TOKEN(1016,HttpStatus.BAD_REQUEST,"Invalid token"),
+    TOKEN_EXPIRED(1017,HttpStatus.BAD_REQUEST,"Expired token")
+    ;
+
 
     private final int code;
     private final HttpStatus httpStatus;

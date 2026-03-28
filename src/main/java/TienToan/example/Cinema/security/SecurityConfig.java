@@ -1,5 +1,6 @@
-package TienToan.example.Cinema.config;
+package TienToan.example.Cinema.security;
 
+import TienToan.example.Cinema.config.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

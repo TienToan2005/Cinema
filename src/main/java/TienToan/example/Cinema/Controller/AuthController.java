@@ -8,10 +8,7 @@ import TienToan.example.Cinema.DTO.response.TokenResponse;
 import TienToan.example.Cinema.DTO.response.UserResponse;
 import TienToan.example.Cinema.Service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/auth")
 @RestController
@@ -41,6 +38,13 @@ public class AuthController {
 
         return ApiResponse.<RefreshTokenResponse>builder()
                 .data(refreshToken)
+                .build();
+    }
+    @GetMapping("/verify")
+    public ApiResponse<String> verifyAccount(@RequestParam("token") String token) {
+        authService.verifyAccount(token);
+        return ApiResponse.<String>builder()
+                .data("Tài khoản của bạn đã được kích hoạt thành công. Bây giờ bạn có thể đăng nhập!")
                 .build();
     }
 }

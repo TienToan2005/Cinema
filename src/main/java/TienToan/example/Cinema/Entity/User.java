@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -46,7 +47,7 @@ public class User extends BaseEntity {
 
     private String favoriteCinema;
 
-    @Column(nullable = false)
-    private boolean active = true;
-
+    private boolean enabled = false;
+    private String verificationToken;
+    private LocalDateTime tokenExpiry;
 }

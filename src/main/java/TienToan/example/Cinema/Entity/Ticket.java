@@ -38,5 +38,6 @@ public class Ticket {
     private TicketStatus status;
     private LocalDateTime bookingTime;
     private LocalDateTime confirmationTime;
+    @Column(unique = true)
     private String txnRef;
 }
