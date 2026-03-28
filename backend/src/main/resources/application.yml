@@ -1,0 +1,53 @@
+
+#config DB
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/cinema_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+#config jpa
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 20
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL}
+    password: ${EMAIL_KEY}
+    properties:
+      mail:
+        smtp.auth: true
+        smtp.starttls:
+          enable: true
+          required: true
+        debug: true
+#log
+logging:
+    level:
+      org:
+        springframework:
+          security=DEBUG
+        web:
+          client:
+            RestTemplate: DEBUG
+
+#config jwt
+jwt:
+  signerKey: ${JWT_SECRET}
+  expiration: ${EXPIRATION_KEY}
+
+payment:
+  momo:
+    partner-code: MOMOBKUN20180529
+    access-key: klm05nuE6WAtw7Eq
+    secret-key: at67qH6vSRU0c7SU9K9YVwvW9aswv2Wl
+    endpoint: https://test-payment.momo.vn/v2/gateway/api/create
+    return-url: http://localhost:3000/payment-status            # Link FE nh?n k?t qu?
+    notify-url: https://your-ngrok-link.ngrok-free.app/api/v1/callback/momo       # Link BE nh?n Webhook
