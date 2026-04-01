@@ -28,13 +28,14 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthService {
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final RefreshTokenService refreshTokenService;
-    private final UserMapper userMapper;
-    private final JwtUntils jwtUntils;
-    private final EmailService emailService;
+    UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
+    RefreshTokenService refreshTokenService;
+    UserMapper userMapper;
+    JwtUntils jwtUntils;
+    EmailService emailService;
 
     public TokenResponse login(LoginRequest req) {
         User user = userRepository.findByEmailOrPhoneNumber(req.email(),req.std())
