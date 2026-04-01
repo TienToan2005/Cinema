@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface TicketRepository extends JpaRepository<Ticket,Long> {
-    @Query("SELECT t.seat.id FROM Ticket t WHERE t.schedule.id = :scheduleId AND t.status = TienToan.example.Cinema.enums.TicketStatus.PAID")
+    @Query("SELECT t.seat.id FROM Ticket t WHERE t.schedule.id = :scheduleId AND t.status = 'PAID'")
     Set<Long> findSeatIdsByScheduleId(@Param("scheduleId") Long scheduleId);
 
     boolean existsByScheduleIdAndSeatId(Long scheduleId, Long seatId, TicketStatus paid);

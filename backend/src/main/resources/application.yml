@@ -30,11 +30,13 @@ spring:
         debug: true
 #log
 logging:
-  level:
-    org.springframework.security: DEBUG
-    web:
-    client:
-      RestTemplate: DEBUG
+    level:
+      org:
+        springframework:
+          security=DEBUG
+        web:
+          client:
+            RestTemplate: DEBUG
 
 #config jwt
 jwt:

@@ -32,32 +32,26 @@ public class ScheduleService {
 
     @Transactional
     public ScheduleResponse createSchedule(ScheduleRequest request){
-        try {
-            // ... giữ nguyên code cũ của bạn ...
-            Movie movie = movieRepository.findById(request.movieId())
-                    .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
-            Room room = roomRepository.findById(request.roomId())
-                    .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
+        Movie movie = movieRepository.findById(request.movieId())
+                .orElseThrow(() -> new AppException(ErrorCode.MOVIE_NOT_FOUND));
+        Room room = roomRepository.findById(request.roomId())
+                .orElseThrow(() -> new AppException(ErrorCode.ROOM_NOT_FOUND));
 
-            LocalDateTime startTime = request.startTime();
-            LocalDateTime endTimeWithCleanup = startTime.plusMinutes(movie.getDuration() + CLEANING_TIME);
-            boolean isOverlapping = scheduleRepository.existsOverlappingSchedule(room.getId(),startTime,endTimeWithCleanup);
-            if (isOverlapping) {
-                throw new AppException(ErrorCode.ROOM_OCCUPIED);
-            }
-            Schedule schedule = Schedule.builder()
-                    .movie(movie)
-                    .room(room)
-                    .startTime(startTime)
-                    .endTime(startTime.plusMinutes(movie.getDuration()))
-                    .price(request.price())
-                    .build();
-            scheduleRepository.save(schedule);
-
-            return scheduleMapper.toScheduleResponse(schedule);
-        } catch (Exception e) {
-            e.printStackTrace(); // Nó sẽ in toàn bộ lỗi màu đỏ ra Console cho bạn xem
-            throw e;
+        LocalDateTime startTime = request.startTime();
+        LocalDateTime endTimeWithCleanup = startTime.plusMinutes(movie.getDuration() + CLEANING_TIME);
+        boolean isOverlapping = scheduleRepository.existsOverlappingSchedule(room.getId(),startTime,endTimeWithCleanup);
+        if (isOverlapping) {
+            throw new AppException(ErrorCode.ROOM_OCCUPIED);
         }
+        Schedule schedule = Schedule.builder()
+                .movie(movie)
+                .room(room)
+                .startTime(startTime)
+                .endTime(startTime.plusMinutes(movie.getDuration()))
+                .price(request.price())
+                .build();
+        scheduleRepository.save(schedule);
+
+        return scheduleMapper.toScheduleResponse(schedule);
     }
 }

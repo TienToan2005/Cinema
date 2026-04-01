@@ -17,7 +17,7 @@ import java.util.function.Function;
 @Service
 @Slf4j
 public class JwtUntils {
-    @Value("${jwt.signerKey}")
+    @Value("${jwt.secret}")
     private String signerKey;
 
     @Value("${jwt.expiration}")

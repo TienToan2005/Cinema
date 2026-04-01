@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Table(name = "movies")
 @Data
 @JsonPropertyOrder({"id", "title", "author", "genre", "duration","releaseDate", "description"})
-public class Movie extends BaseEntity {
+public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

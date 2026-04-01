@@ -6,8 +6,10 @@ import TienToan.example.Cinema.DTO.response.SeatResponse;
 import TienToan.example.Cinema.Service.SeatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -17,10 +19,11 @@ import java.util.List;
 public class SeatController {
     public final SeatService seatService;
 
-    @PostMapping("/generate/{roomId}")
-    public ResponseEntity<String> generateSeats(@PathVariable Long roomId) {
-        seatService.generateSeatsForRoom(roomId);
-        return ResponseEntity.ok("Đã tạo xong sơ đồ ghế cho phòng " + roomId);
+    @PostMapping
+    public ApiResponse<SeatResponse> createSeat(SeatRequest request){
+        return ApiResponse.<SeatResponse>builder()
+                .data(seatService.createSeat(request))
+                .build();
     }
     @GetMapping
     public ApiResponse<List<SeatResponse>> getSeatsBySchedule(@Param("schedule_id") Long scheduleId){

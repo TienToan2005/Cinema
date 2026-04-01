@@ -3,17 +3,16 @@ package TienToan.example.Cinema.Mapper;
 import TienToan.example.Cinema.DTO.request.MovieRequest;
 import TienToan.example.Cinema.DTO.response.MovieResponse;
 import TienToan.example.Cinema.Entity.Movie;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface MovieMapper {
-
-    @Mapping(target = "id", source = "id")
-    MovieResponse toMovieResponse(Movie movie);
-
     Movie toMovie(MovieRequest request);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    MovieResponse toMovieResponse(Movie movie);
+
     @Mapping(target = "id", ignore = true)
     void updateMovie(@MappingTarget Movie movie, MovieRequest request);
 }
