@@ -1,5 +1,6 @@
 package TienToan.example.Cinema.DTO.response;
 
+import TienToan.example.Cinema.enums.TicketStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,6 @@ public class TicketResponse {
     private Long roomId;
     private Long scheduleId;
     private Double totalPrice;
-    private Boolean status;
+    private TicketStatus status;
     private LocalDateTime bookingTime;
 }
