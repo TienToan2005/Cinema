@@ -2,7 +2,6 @@ package TienToan.example.Cinema.Controller;
 
 import TienToan.example.Cinema.DTO.request.BookingRequest;
 import TienToan.example.Cinema.DTO.response.ApiResponse;
-import TienToan.example.Cinema.DTO.request.TicketRequest;
 import TienToan.example.Cinema.DTO.response.BookingResponse;
 import TienToan.example.Cinema.DTO.response.TicketResponse;
 import TienToan.example.Cinema.Service.TicketService;

@@ -1,6 +1,7 @@
 package TienToan.example.Cinema.config;
 
 import TienToan.example.Cinema.enums.Role;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Getter
 public class MyUserDetails implements UserDetails {
     private final String loginIdentifier;
     private final String password;

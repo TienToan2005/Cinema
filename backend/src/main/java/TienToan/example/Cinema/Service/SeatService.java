@@ -1,11 +1,9 @@
 package TienToan.example.Cinema.Service;
 
-import TienToan.example.Cinema.DTO.request.SeatRequest;
 import TienToan.example.Cinema.DTO.response.SeatResponse;
 import TienToan.example.Cinema.Entity.Room;
 import TienToan.example.Cinema.Entity.Schedule;
 import TienToan.example.Cinema.Entity.Seat;
-import TienToan.example.Cinema.Mapper.SeatMapper;
 import TienToan.example.Cinema.Repository.RoomRepository;
 import TienToan.example.Cinema.Repository.ScheduleRepository;
 import TienToan.example.Cinema.Repository.SeatRepository;
@@ -30,7 +28,6 @@ public class SeatService {
     ScheduleRepository scheduleRepository;
     TicketRepository ticketRepository;
     RoomRepository roomRepository;
-    SeatMapper seatMapper;
     BookingCacheService bookingCacheService;
 
     @Transactional

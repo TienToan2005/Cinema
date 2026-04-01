@@ -9,12 +9,9 @@ import TienToan.example.Cinema.Repository.UserRepository;
 import TienToan.example.Cinema.enums.ErrorCode;
 import TienToan.example.Cinema.exception.AppException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 
 @Service

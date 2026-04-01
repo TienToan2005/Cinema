@@ -50,7 +50,8 @@ public class MomoService {
         body.put("signature", signature);
 
         // 4. Gọi API MoMo
-        Map<String, Object> response = restTemplate.postForObject(momoConfig.getEndpoint(), body, Map.class);
+        @SuppressWarnings("unchecked")
+        Map<String, Object> response = (Map<String, Object>) restTemplate.postForObject(momoConfig.getEndpoint(), body, Map.class);
 
         // Trả về payUrl (link chứa mã QR)
         return response.get("payUrl").toString();

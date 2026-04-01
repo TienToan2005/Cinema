@@ -1,11 +1,14 @@
 package TienToan.example.Cinema.DTO.response;
 
-import jakarta.persistence.Column;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Builder
+@Getter
+@Setter
 public class MovieResponse {
     private String title;
     private String genre;

@@ -4,13 +4,11 @@ import TienToan.example.Cinema.DTO.request.UserUpdateDTO;
 import TienToan.example.Cinema.DTO.response.ApiResponse;
 import TienToan.example.Cinema.DTO.response.PageResponse;
 import TienToan.example.Cinema.DTO.response.UserResponse;
-import TienToan.example.Cinema.Service.AuthService;
 import TienToan.example.Cinema.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

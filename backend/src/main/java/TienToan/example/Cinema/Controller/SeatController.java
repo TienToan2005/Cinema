@@ -1,6 +1,5 @@
 package TienToan.example.Cinema.Controller;
 
-import TienToan.example.Cinema.DTO.request.SeatRequest;
 import TienToan.example.Cinema.DTO.response.ApiResponse;
 import TienToan.example.Cinema.DTO.response.SeatResponse;
 import TienToan.example.Cinema.Service.SeatService;

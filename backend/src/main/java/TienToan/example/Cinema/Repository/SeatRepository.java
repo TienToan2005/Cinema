@@ -1,6 +1,5 @@
 package TienToan.example.Cinema.Repository;
 
-import TienToan.example.Cinema.Entity.Movie;
 import TienToan.example.Cinema.Entity.Seat;
 import org.springframework.data.jpa.repository.JpaRepository;
 
