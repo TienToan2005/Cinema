@@ -1,6 +1,7 @@
 package TienToan.example.Cinema.Entity;
 
 import TienToan.example.Cinema.enums.Role;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthday;
 
     @Enumerated(EnumType.STRING)

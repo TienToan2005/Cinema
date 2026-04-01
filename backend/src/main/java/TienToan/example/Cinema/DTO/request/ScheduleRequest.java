@@ -6,6 +6,7 @@ public record ScheduleRequest(
     Long movieId,
     Long roomId,
     LocalDateTime startTime,
+    LocalDateTime endTime,
     Double price
 ) {
 }

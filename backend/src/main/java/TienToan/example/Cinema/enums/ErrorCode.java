@@ -26,7 +26,8 @@ public enum ErrorCode {
     PAYMENT_ERROR(1014,HttpStatus.BAD_REQUEST,"Lỗi thanh toán"),
     USER_NOT_ACTIVE(1015,HttpStatus.BAD_REQUEST,"User not active"),
     INVALID_TOKEN(1016,HttpStatus.BAD_REQUEST,"Invalid token"),
-    TOKEN_EXPIRED(1017,HttpStatus.BAD_REQUEST,"Expired token")
+    TOKEN_EXPIRED(1017,HttpStatus.BAD_REQUEST,"Expired token"),
+    ROOM_EXISTED(1009,HttpStatus.CONFLICT,"Room already exists"),
     ;
 
 

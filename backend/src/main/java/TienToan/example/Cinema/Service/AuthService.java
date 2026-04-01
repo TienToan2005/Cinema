@@ -38,7 +38,7 @@ public class AuthService {
     EmailService emailService;
 
     public TokenResponse login(LoginRequest req) {
-        User user = userRepository.findByEmailOrPhoneNumber(req.email(),req.std())
+        User user = userRepository.findByEmailOrPhoneNumber(req.username(), req.username())
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         if (!user.isEnabled()) {
             throw new AppException(ErrorCode.USER_NOT_ACTIVE);
@@ -49,8 +49,8 @@ public class AuthService {
         var accessToken = jwtUntils.generateAccessToken(user);
         var refreshToken = refreshTokenService.createRefreshToken(user);
         return TokenResponse.builder()
-                .email(req.email())
-                .sdt(req.std())
+                .email(user.getEmail())
+                .sdt(user.getPhoneNumber())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken.getToken())
                 .role(user.getRole())
@@ -63,6 +63,7 @@ public class AuthService {
         }
 
         User user = new User();
+        user.setFullName(request.fullName());
         user.setEmail(request.email());
         user.setPhoneNumber(request.std());
         user.setPassword(passwordEncoder.encode(request.password()));
@@ -79,7 +80,7 @@ public class AuthService {
         user.setTokenExpiry(LocalDateTime.now().plusHours(24));
 
         User savedUser = userRepository.save(user);
-        emailService.sendVerificationEmail(savedUser.getEmail(), token);
+       // emailService.sendVerificationEmail(savedUser.getEmail(), token);
 
         return userMapper.toUserResponse(savedUser);
     }
